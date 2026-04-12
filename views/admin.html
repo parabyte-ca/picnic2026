@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Picnic 2026</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-page">
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <div>
+        <h1 class="admin-title">Picnic 2026 Admin</h1>
+        <p class="admin-subtitle">Moote Friends &amp; Family Picnic — June 20, 2026</p>
+      </div>
+      <div class="admin-header-actions">
+        <button class="btn btn-ghost btn-sm" id="refreshBtn">↻ Refresh</button>
+        <button class="btn btn-ghost btn-sm" id="adminLogoutBtn">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-container">
+
+      <!-- ── Summary Stats ──────────────────────────────────────────── -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-value" id="statTotalVotes">—</div>
+          <div class="stat-label">Total Photo Votes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statTotalRsvps">—</div>
+          <div class="stat-label">RSVP Responses</div>
+        </div>
+        <div class="stat-card stat-card--green">
+          <div class="stat-value" id="statParticipating">—</div>
+          <div class="stat-label">Playing Cornhole</div>
+        </div>
+        <div class="stat-card stat-card--gold">
+          <div class="stat-value" id="statSets">—</div>
+          <div class="stat-label">Sets Available</div>
+        </div>
+      </div>
+
+      <!-- ── Photo Vote Results ─────────────────────────────────────── -->
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <h2>Photo Banner Votes</h2>
+          <span class="panel-meta" id="voteTotal">Loading…</span>
+        </div>
+        <div class="vote-results" id="voteResults">
+          <!-- Rendered by admin.js -->
+          <div class="loading-msg">Loading vote data…</div>
+        </div>
+      </div>
+
+      <!-- ── Cornhole RSVPs ──────────────────────────────────────────── -->
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <h2>Cornhole RSVP Responses</h2>
+          <a href="/api/admin/export" class="btn btn-sm btn-outline" download="cornhole-rsvps.csv">
+            ↓ Download CSV
+          </a>
+        </div>
+
+        <div id="rsvpTableWrap">
+          <div class="loading-msg">Loading RSVP data…</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

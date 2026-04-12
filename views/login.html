@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moote Friends &amp; Family Picnic 2026</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-bg"></div>
+
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-emblem">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="32" cy="32" r="32" fill="#d8f3dc"/>
+          <path d="M32 14 C32 14 20 22 20 32 C20 38.6 25.4 44 32 44 C38.6 44 44 38.6 44 32 C44 22 32 14 32 14Z" fill="#2d6a4f"/>
+          <path d="M32 44 L32 52" stroke="#40916c" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M26 48 L38 48" stroke="#40916c" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M24 26 C24 26 20 20 26 18" stroke="#52b788" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 24 C38 24 44 20 40 16" stroke="#52b788" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+
+      <h1 class="auth-title">Moote Friends &amp; Family</h1>
+      <h2 class="auth-subtitle">Picnic 2026</h2>
+      <p class="auth-hint">Enter the password to view your invitation</p>
+
+      <form id="loginForm" class="auth-form" novalidate>
+        <div class="form-field">
+          <label for="password" class="sr-only">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            class="auth-input"
+            required
+          >
+        </div>
+        <div id="loginError" class="form-error hidden" role="alert"></div>
+        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+          View Invitation
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const form    = document.getElementById('loginForm');
+    const errEl   = document.getElementById('loginError');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEl.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Checking…';
+
+      try {
+        const res  = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: document.getElementById('password').value })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          window.location.href = '/';
+        } else {
+          errEl.textContent = data.message || 'Incorrect password.';
+          errEl.classList.remove('hidden');
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'View Invitation';
+        }
+      } catch {
+        errEl.textContent = 'Connection error — please try again.';
+        errEl.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'View Invitation';
+      }
+    });
+  </script>
+</body>
+</html>

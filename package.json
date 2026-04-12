@@ -1,0 +1,13 @@
+{
+  "name": "picnic2026",
+  "version": "1.0.0",
+  "description": "Moote Friends & Family Picnic 2026 – Invitation & Participation Tracker",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3"
+  }
+}

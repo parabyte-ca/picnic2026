@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#ff9a9e"/>
+      <stop offset="50%"  stop-color="#fad0c4"/>
+      <stop offset="100%" stop-color="#ffecd2"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g1)"/>
+  <!-- Camera icon -->
+  <rect x="320" y="220" width="160" height="120" rx="16" fill="rgba(255,255,255,0.25)"/>
+  <rect x="344" y="208" width="48" height="20" rx="6" fill="rgba(255,255,255,0.25)"/>
+  <circle cx="400" cy="280" r="36" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="400" cy="280" r="24" fill="rgba(255,255,255,0.4)"/>
+  <!-- Label -->
+  <text x="400" y="390" text-anchor="middle" font-family="Georgia,serif" font-size="36" font-weight="bold" fill="rgba(255,255,255,0.9)">Option A</text>
+  <text x="400" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="rgba(255,255,255,0.7)">Photo by Adria Porter</text>
+  <text x="400" y="460" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="rgba(255,255,255,0.5)">Replace with /public/images/photo1.jpg</text>
+</svg>
