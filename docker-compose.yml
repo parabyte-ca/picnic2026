@@ -1,0 +1,17 @@
+services:
+  picnic:
+    build: .
+    container_name: picnic2026
+    restart: unless-stopped
+    ports:
+      - "3000:3000"        # Change left side to use a different host port, e.g. "8080:3000"
+    volumes:
+      - picnic_data:/app/data   # Persists votes, RSVPs, and session secret across restarts
+    environment:
+      PORT: 3000
+      # Optional overrides — remove these lines to use the defaults
+      # MAIN_PASSWORD:  Moote2026
+      # ADMIN_PASSWORD: MooteAdmin2026
+
+volumes:
+  picnic_data:
