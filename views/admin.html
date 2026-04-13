@@ -73,6 +73,70 @@
     </div>
   </main>
 
+  <!-- ── Edit RSVP Modal ──────────────────────────────────────────────── -->
+  <div id="editModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Edit RSVP</h3>
+        <button class="modal-close" id="modalClose" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId">
+
+        <div class="form-field">
+          <label class="form-label" for="editName">Name</label>
+          <input type="text" id="editName" class="form-input" placeholder="Full name">
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Participating in cornhole?</label>
+          <div class="toggle-group">
+            <label class="toggle-option">
+              <input type="radio" name="editParticipating" value="true"> <span class="toggle-btn">Yes</span>
+            </label>
+            <label class="toggle-option">
+              <input type="radio" name="editParticipating" value="false"> <span class="toggle-btn">No</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Can bring a cornhole set?</label>
+          <div class="toggle-group">
+            <label class="toggle-option">
+              <input type="radio" name="editBringSet" value="true"> <span class="toggle-btn">Yes</span>
+            </label>
+            <label class="toggle-option">
+              <input type="radio" name="editBringSet" value="false"> <span class="toggle-btn">No</span>
+            </label>
+            <label class="toggle-option">
+              <input type="radio" name="editBringSet" value="null"> <span class="toggle-btn">N/A</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="editEmail">Email</label>
+          <input type="email" id="editEmail" class="form-input" placeholder="email@example.com">
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="editDetails">Additional Details</label>
+          <textarea id="editDetails" class="form-input form-textarea" rows="3" placeholder="Optional"></textarea>
+        </div>
+
+        <div id="editError" class="form-error hidden" role="alert"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="deleteRsvpBtn">Delete Entry</button>
+        <div class="modal-footer-right">
+          <button class="btn btn-ghost" id="cancelEditBtn">Cancel</button>
+          <button class="btn btn-primary" id="saveEditBtn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="/js/admin.js"></script>
 </body>
 </html>

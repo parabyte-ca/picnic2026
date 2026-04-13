@@ -7,106 +7,137 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 });
 
 /* ══════════════════════════════════════════════════════════
-   PHOTO VOTING
+   PHOTO VOTING — multi-select with lock-in
    ══════════════════════════════════════════════════════════ */
-const PHOTO_LABELS = { 1: 'Option A', 2: 'Option B', 3: 'Option C', 4: 'Option D' };
-const photoGrid   = document.getElementById('photoGrid');
-const voteConfirm = document.getElementById('voteConfirm');
+const photoGrid      = document.getElementById('photoGrid');
+const voteActions    = document.getElementById('voteActions');
+const voteConfirm    = document.getElementById('voteConfirm');
+const lockVoteBtn    = document.getElementById('lockVoteBtn');
+const selectionCount = document.getElementById('voteSelectionCount');
 
-// Fetch current vote status on page load
+// IDs the user has clicked but not yet locked in
+const pending = new Set();
+
+// ── On load: restore state ──────────────────────────────
 (async function initVote() {
   try {
     const res  = await fetch('/api/vote/status');
     const data = await res.json();
     if (data.hasVoted) {
-      applyVotedState(data.votedFor, data.counts);
+      applyLockedState(new Set(data.votedFor), data.counts);
     }
-  } catch (e) {
-    console.warn('Could not load vote status:', e);
-  }
+  } catch (e) { console.warn('Vote status error:', e); }
 })();
 
-// Click / keyboard handler on photo cards
-photoGrid.addEventListener('click', handlePhotoInteraction);
-photoGrid.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    handlePhotoInteraction(e);
-  }
+// ── Toggle selection on click / keyboard ────────────────
+photoGrid.addEventListener('click', handleToggle);
+photoGrid.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggle(e); }
 });
 
-async function handlePhotoInteraction(e) {
+function handleToggle(e) {
   const card = e.target.closest('.photo-card');
-  if (!card) return;
-  if (card.classList.contains('voted')) return; // already voted
+  if (!card || card.classList.contains('voted')) return;
 
-  const photoId = parseInt(card.dataset.photoId, 10);
+  const id = parseInt(card.dataset.photoId, 10);
 
-  // Optimistic UI
-  card.style.pointerEvents = 'none';
+  if (pending.has(id)) {
+    pending.delete(id);
+    card.classList.remove('is-pending');
+  } else {
+    pending.add(id);
+    card.classList.add('is-pending');
+  }
+
+  updateLockBar();
+}
+
+function updateLockBar() {
+  const n = pending.size;
+  if (n === 0) {
+    voteActions.classList.add('hidden');
+  } else {
+    voteActions.classList.remove('hidden');
+    selectionCount.textContent = `${n} photo${n !== 1 ? 's' : ''} selected`;
+  }
+}
+
+// ── Lock in votes ───────────────────────────────────────
+lockVoteBtn.addEventListener('click', async () => {
+  if (pending.size === 0) return;
+
+  lockVoteBtn.disabled = true;
+  lockVoteBtn.textContent = 'Locking in…';
 
   try {
     const res  = await fetch('/api/vote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ photoId })
+      body: JSON.stringify({ photoIds: [...pending] })
     });
     const data = await res.json();
 
     if (data.success) {
-      applyVotedState(data.votedFor, data.counts);
+      applyLockedState(new Set(data.votedFor), data.counts);
     } else if (data.alreadyVoted) {
-      applyVotedState(data.votedFor, data.counts);
+      applyLockedState(new Set(data.votedFor), data.counts);
     } else {
-      card.style.pointerEvents = '';
+      lockVoteBtn.disabled = false;
+      lockVoteBtn.textContent = 'Lock In My Vote';
       console.warn('Vote error:', data.message);
     }
   } catch (err) {
-    card.style.pointerEvents = '';
+    lockVoteBtn.disabled = false;
+    lockVoteBtn.textContent = 'Lock In My Vote';
     console.error('Vote request failed:', err);
   }
-}
+});
 
-function applyVotedState(votedFor, counts) {
+function applyLockedState(votedForSet, counts) {
   const total = counts.reduce((s, c) => s + c.count, 0);
 
+  // Hide the lock-in bar
+  voteActions.classList.add('hidden');
+
   document.querySelectorAll('.photo-card').forEach(card => {
-    const id = parseInt(card.dataset.photoId, 10);
+    const id    = parseInt(card.dataset.photoId, 10);
     const entry = counts.find(c => c.photoId === id) || { count: 0 };
     const pct   = total > 0 ? Math.round((entry.count / total) * 100) : 0;
 
+    // Mark as voted (disables further interaction)
+    card.classList.remove('is-pending');
     card.classList.add('voted');
     card.setAttribute('tabindex', '-1');
 
-    // Show vote count
+    // Swap vote label → vote count
     const countEl = card.querySelector('.photo-vote-count');
+    const labelEl = card.querySelector('.photo-vote-label');
     if (countEl) {
       countEl.textContent = `${entry.count} vote${entry.count !== 1 ? 's' : ''} (${pct}%)`;
       countEl.classList.remove('hidden');
     }
-    const labelEl = card.querySelector('.photo-vote-label');
     if (labelEl) labelEl.classList.add('hidden');
 
-    // Add vote bar
-    if (!card.querySelector('.vote-bar-wrap')) {
-      const barWrap = document.createElement('div');
+    // Add or update vote bar
+    let barWrap = card.querySelector('.vote-bar-wrap');
+    if (!barWrap) {
+      barWrap = document.createElement('div');
       barWrap.className = 'vote-bar-wrap';
       const bar = document.createElement('div');
       bar.className = 'vote-bar';
       bar.style.width = '0%';
       barWrap.appendChild(bar);
       card.appendChild(barWrap);
-      // Animate after paint
-      requestAnimationFrame(() => { bar.style.width = pct + '%'; });
-    } else {
-      const bar = card.querySelector('.vote-bar');
-      if (bar) bar.style.width = pct + '%';
     }
+    const bar = barWrap.querySelector('.vote-bar');
+    requestAnimationFrame(() => { if (bar) bar.style.width = pct + '%'; });
 
-    if (id === votedFor) {
+    // Highlight this user's picks
+    if (votedForSet.has(id)) {
       card.classList.add('is-my-vote');
-      const bar = card.querySelector('.vote-bar');
       if (bar) bar.classList.add('is-winner');
+    } else {
+      card.classList.remove('is-my-vote');
     }
   });
 
@@ -124,18 +155,14 @@ const submitBtn       = document.getElementById('rsvpSubmitBtn');
 const bringSetSection = document.getElementById('bringSetSection');
 const contactSection  = document.getElementById('contactSection');
 
-// Check if already submitted
 (async function initRsvp() {
   try {
     const res  = await fetch('/api/cornhole/status');
     const data = await res.json();
     if (data.submitted) showRsvpConfirm();
-  } catch (e) {
-    console.warn('Could not load RSVP status:', e);
-  }
+  } catch (e) { console.warn('RSVP status error:', e); }
 })();
 
-// Progressive form reveal
 document.querySelectorAll('input[name="isParticipating"]').forEach(radio => {
   radio.addEventListener('change', () => {
     if (radio.value === 'yes') {
@@ -150,17 +177,14 @@ document.querySelectorAll('input[name="isParticipating"]').forEach(radio => {
 
 document.querySelectorAll('input[name="canBringSet"]').forEach(radio => {
   radio.addEventListener('change', () => {
-    if (radio.value === 'yes') {
-      showReveal(contactSection);
-    } else {
-      hideReveal(contactSection);
-    }
+    if (radio.value === 'yes') showReveal(contactSection);
+    else                        hideReveal(contactSection);
   });
 });
 
 function showReveal(el) {
   el.classList.remove('hidden');
-  el.style.maxHeight = el.scrollHeight + 200 + 'px'; // extra for nested reveals
+  el.style.maxHeight = el.scrollHeight + 200 + 'px';
 }
 function hideReveal(el) {
   el.style.maxHeight = '0';
@@ -170,7 +194,6 @@ function uncheckGroup(name) {
   document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.checked = false);
 }
 
-// Form submission
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   errorEl.classList.add('hidden');
