@@ -818,6 +818,42 @@ ul, ol { list-style: none; }
 
 .loading-msg { padding: 40px 24px; text-align: center; color: var(--text-muted); font-size: .9rem; }
 
+/* ── Butterfly shadow layer ──────────────────────────────────── */
+.butterfly-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;           /* sits between hero background and .hero-content (z-index:1) */
+}
+
+/* Wing flap — left wing collapses rightward (toward body centre) */
+@keyframes bf-flap-l {
+  0%, 100% { transform: scaleX(1); }
+  50%       { transform: scaleX(0.04); }
+}
+/* Wing flap — right wing collapses leftward (toward body centre) */
+@keyframes bf-flap-r {
+  0%, 100% { transform: scaleX(1); }
+  50%       { transform: scaleX(0.04); }
+}
+
+.bf-wing-l {
+  transform-box: fill-box;
+  transform-origin: 100% 28%;   /* right edge of left-wing bbox = body centre */
+  animation: bf-flap-l 0.4s ease-in-out infinite;
+}
+.bf-wing-r {
+  transform-box: fill-box;
+  transform-origin: 0% 28%;     /* left edge of right-wing bbox = body centre */
+  animation: bf-flap-r 0.4s ease-in-out infinite;
+}
+
+/* Disable for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .butterfly-layer { display: none; }
+}
+
 /* ── Vote lock-in bar ────────────────────────────────────────── */
 .vote-actions {
   display: flex;
