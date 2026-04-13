@@ -9,10 +9,7 @@
   const layer = document.getElementById('butterflyLayer');
   if (!layer) return;
 
-  // Respect prefers-reduced-motion
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const NS = 'http://www.w3.org/2000/svg';
+const NS = 'http://www.w3.org/2000/svg';
 
   // Each config: visual properties + movement character
   // blur + low opacity = out-of-focus shadow look
