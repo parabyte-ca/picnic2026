@@ -16,7 +16,7 @@
         <li><a href="#details">Details</a></li>
         <li><a href="#directions">Directions</a></li>
         <li><a href="#vote">Photo Vote</a></li>
-        <li><a href="#cornhole">Cornhole</a></li>
+        <li><a href="#cornhole">Cornhole Tournament</a></li>
       </ul>
       <button class="btn btn-ghost btn-sm logout-btn" id="logoutBtn">Sign out</button>
     </nav>
@@ -36,7 +36,7 @@
         </div>
         <div class="hero-detail-item">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>Noon — 12:00 pm</span>
+          <span>Noon — whenever</span>
         </div>
         <div class="hero-detail-item">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -66,7 +66,7 @@
           </div>
           <h3>Date &amp; Time</h3>
           <p><strong>Saturday, June 20, 2026</strong></p>
-          <p>Starting at 12:00 pm (noon)</p>
+          <p>Noon — whenever</p>
         </div>
 
         <div class="detail-card">
@@ -125,11 +125,11 @@
           <ol class="direction-steps">
             <li>Take the <strong>QEW West</strong> toward Hamilton</li>
             <li>Take the <strong>Burloak Drive</strong> exit</li>
-            <li>At the ramp, turn <strong>Right (North)</strong> onto Burloak Drive</li>
-            <li>Continue north on Burloak Drive for approx. <strong>3.5 km</strong></li>
-            <li>Park entrance on your <strong>left</strong> — look for the brown provincial park signs</li>
+            <li>Turn <strong>Right (North)</strong> onto Burloak Drive</li>
+            <li>Continue north approx. <strong>3.5 km</strong></li>
+            <li>Park entrance on your <strong>left</strong> (brown provincial park signs)</li>
             <li>At the gate, follow signs to the <strong>Day Use Area</strong></li>
-            <li>Proceed to the <strong>Baseball A Pavilion</strong></li>
+            <li>Head to the <strong>Baseball A Pavilion</strong></li>
           </ol>
         </div>
 
@@ -140,18 +140,18 @@
           <ol class="direction-steps">
             <li>Take the <strong>QEW East</strong> toward Toronto</li>
             <li>Take the <strong>Burloak Drive</strong> exit</li>
-            <li>At the ramp, turn <strong>Left (North)</strong> onto Burloak Drive</li>
-            <li>Continue north on Burloak Drive for approx. <strong>3.5 km</strong></li>
-            <li>Park entrance on your <strong>left</strong> — look for the brown provincial park signs</li>
+            <li>Turn <strong>Left (North)</strong> onto Burloak Drive</li>
+            <li>Continue north approx. <strong>3.5 km</strong></li>
+            <li>Park entrance on your <strong>left</strong> (brown provincial park signs)</li>
             <li>At the gate, follow signs to the <strong>Day Use Area</strong></li>
-            <li>Proceed to the <strong>Baseball A Pavilion</strong></li>
+            <li>Head to the <strong>Baseball A Pavilion</strong></li>
           </ol>
         </div>
       </div>
 
       <div class="directions-note">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span>A daily vehicle permit is required to enter the park. Permits are available at the entrance gate.</span>
+        <span>A daily vehicle permit is required to enter the park. Permits are available at the entrance gate. Parking permit is included with overnight camping.</span>
       </div>
     </div>
   </section>
@@ -159,16 +159,16 @@
   <!-- ── Photo Banner Vote ─────────────────────────────────────────────── -->
   <section class="section section--light" id="vote">
     <div class="container">
-      <h2 class="section-title">Vote for This Year's Photo Banner</h2>
+      <h2 class="section-title">Vote for This Year's Picnic Image!</h2>
       <p class="section-subtitle">
         Help us pick the banner photo for Picnic 2026! Cast your vote below for your favourite.<br>
         <span class="photo-credit">All photos by <strong>Adria Porter</strong></span>
       </p>
 
-      <!-- Already-voted banner (hidden until needed) -->
+      <!-- Confirmed banner (shown after locking in) -->
       <div id="voteConfirm" class="vote-confirm hidden" role="status">
         <svg class="icon icon--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
-        Thanks for voting! Your choice is highlighted below.
+        Your vote is locked in! Your selection(s) are highlighted below.
       </div>
 
       <div class="photo-grid" id="photoGrid">
@@ -182,6 +182,10 @@
           <div class="photo-card-body">
             <span class="photo-vote-label">Tap to vote</span>
             <span class="photo-vote-count hidden" data-photo-id="1">0 votes</span>
+          </div>
+          <div class="photo-pending-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            Selected
           </div>
           <div class="photo-selected-badge" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
@@ -198,6 +202,10 @@
             <span class="photo-vote-label">Tap to vote</span>
             <span class="photo-vote-count hidden" data-photo-id="2">0 votes</span>
           </div>
+          <div class="photo-pending-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            Selected
+          </div>
           <div class="photo-selected-badge" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
             Your Vote
@@ -212,6 +220,10 @@
           <div class="photo-card-body">
             <span class="photo-vote-label">Tap to vote</span>
             <span class="photo-vote-count hidden" data-photo-id="3">0 votes</span>
+          </div>
+          <div class="photo-pending-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            Selected
           </div>
           <div class="photo-selected-badge" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
@@ -228,6 +240,10 @@
             <span class="photo-vote-label">Tap to vote</span>
             <span class="photo-vote-count hidden" data-photo-id="4">0 votes</span>
           </div>
+          <div class="photo-pending-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            Selected
+          </div>
           <div class="photo-selected-badge" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
             Your Vote
@@ -235,6 +251,14 @@
         </div>
 
       </div><!-- /photo-grid -->
+
+      <!-- Lock-in bar — revealed once at least one photo is selected -->
+      <div id="voteActions" class="vote-actions hidden" aria-live="polite">
+        <span id="voteSelectionCount" class="vote-selection-count">1 photo selected</span>
+        <span class="vote-selection-hint">You can select more than one</span>
+        <button id="lockVoteBtn" class="btn btn-primary">Lock In My Vote</button>
+      </div>
+
     </div>
   </section>
 

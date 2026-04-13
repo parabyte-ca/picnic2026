@@ -110,9 +110,12 @@ app.post('/api/logout', (req, res) => {
 
 // ── API: Photo voting ──────────────────────────────────────────────────────
 app.post('/api/vote', requireAuth, (req, res) => {
-  const id = parseInt(req.body.photoId, 10);
-  if (!id || id < 1 || id > 4) {
-    return res.status(400).json({ success: false, message: 'Invalid photo selection.' });
+  // Accept an array of photoIds (multi-vote)
+  let photoIds = Array.isArray(req.body.photoIds) ? req.body.photoIds : [];
+  photoIds = [...new Set(photoIds.map(id => parseInt(id, 10)).filter(id => id >= 1 && id <= 4))];
+
+  if (photoIds.length === 0) {
+    return res.status(400).json({ success: false, message: 'Please select at least one photo.' });
   }
 
   const votes = readJSON(VOTES_FILE);
@@ -126,26 +129,24 @@ app.post('/api/vote', requireAuth, (req, res) => {
     });
   }
 
-  votes.push({
-    id: Date.now(),
-    photoId: id,
-    sessionId: req.session.id,
-    timestamp: new Date().toISOString()
+  const ts = new Date().toISOString();
+  photoIds.forEach((id, i) => {
+    votes.push({ id: Date.now() + i, photoId: id, sessionId: req.session.id, timestamp: ts });
   });
   writeJSON(VOTES_FILE, votes);
 
   req.session.voted    = true;
-  req.session.votedFor = id;
+  req.session.votedFor = photoIds;
 
-  res.json({ success: true, votedFor: id, counts: voteCounts(votes) });
+  res.json({ success: true, votedFor: photoIds, counts: voteCounts(votes) });
 });
 
 app.get('/api/vote/status', requireAuth, (req, res) => {
   const votes = readJSON(VOTES_FILE);
   res.json({
-    hasVoted: !!req.session.voted,
-    votedFor: req.session.votedFor || null,
-    counts: voteCounts(votes)
+    hasVoted:  !!req.session.voted,
+    votedFor:  req.session.votedFor || null,
+    counts:    voteCounts(votes)
   });
 });
 
@@ -197,10 +198,11 @@ app.get('/api/admin/data', requireAdmin, (_req, res) => {
   res.json({
     voteCounts: voteCounts(votes),
     totalVotes: votes.length,
+    allVotes:   votes,
     rsvps,
     totalRsvps: rsvps.length,
     participatingCount: rsvps.filter(r => r.isParticipating).length,
-    bringingSetCount: rsvps.filter(r => r.canBringSet).length
+    bringingSetCount:   rsvps.filter(r => r.canBringSet).length
   });
 });
 
@@ -221,6 +223,50 @@ app.get('/api/admin/export', requireAdmin, (_req, res) => {
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', 'attachment; filename="cornhole-rsvps.csv"');
   res.send(csv);
+});
+
+// ── API: Admin RSVP edit / delete ─────────────────────────────────────────
+app.put('/api/admin/rsvp/:id', requireAdmin, (req, res) => {
+  const id    = parseInt(req.params.id, 10);
+  const rsvps = readJSON(RSVPS_FILE);
+  const idx   = rsvps.findIndex(r => r.id === id);
+  if (idx === -1) return res.status(404).json({ success: false, message: 'RSVP not found.' });
+
+  const { name, isParticipating, canBringSet, email, additionalDetails } = req.body;
+  const r = rsvps[idx];
+
+  rsvps[idx] = {
+    ...r,
+    name:              name !== undefined              ? String(name).trim()                                                         : r.name,
+    isParticipating:   isParticipating !== undefined   ? (isParticipating === true || isParticipating === 'true')                    : r.isParticipating,
+    canBringSet:       canBringSet !== undefined        ? (canBringSet === true || canBringSet === 'true' ? true
+                                                         : canBringSet === false || canBringSet === 'false' ? false : null)           : r.canBringSet,
+    email:             email !== undefined              ? (String(email).trim() || null)                                              : r.email,
+    additionalDetails: additionalDetails !== undefined  ? (String(additionalDetails).trim() || null)                                  : r.additionalDetails,
+    updatedAt:         new Date().toISOString()
+  };
+
+  writeJSON(RSVPS_FILE, rsvps);
+  res.json({ success: true, rsvp: rsvps[idx] });
+});
+
+app.delete('/api/admin/rsvp/:id', requireAdmin, (req, res) => {
+  const id      = parseInt(req.params.id, 10);
+  const rsvps   = readJSON(RSVPS_FILE);
+  const updated = rsvps.filter(r => r.id !== id);
+  if (updated.length === rsvps.length) return res.status(404).json({ success: false, message: 'RSVP not found.' });
+  writeJSON(RSVPS_FILE, updated);
+  res.json({ success: true });
+});
+
+// ── API: Admin vote delete ─────────────────────────────────────────────────
+app.delete('/api/admin/vote/:id', requireAdmin, (req, res) => {
+  const id      = parseInt(req.params.id, 10);
+  const votes   = readJSON(VOTES_FILE);
+  const updated = votes.filter(v => v.id !== id);
+  if (updated.length === votes.length) return res.status(404).json({ success: false, message: 'Vote not found.' });
+  writeJSON(VOTES_FILE, updated);
+  res.json({ success: true });
 });
 
 // ── Start ──────────────────────────────────────────────────────────────────
