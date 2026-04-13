@@ -225,6 +225,35 @@ app.get('/api/admin/export', requireAdmin, (_req, res) => {
   res.send(csv);
 });
 
+// ── Calendar download (.ics) ───────────────────────────────────────────────
+app.get('/picnic2026.ics', requireAuth, (_req, res) => {
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Moote Family//Picnic 2026//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    'UID:moote-picnic-20260620@mootefamily',
+    'DTSTAMP:20260413T120000Z',
+    'DTSTART:20260620T120000',
+    'DTEND:20260620T210000',
+    'SUMMARY:Moote Friends & Family Picnic 2026',
+    'DESCRIPTION:Meet at the Baseball A Pavilion (Day Use Side).\\n' +
+      'A daily vehicle permit is required at the entrance gate.\\n' +
+      'Parking permit included with overnight camping.',
+    'LOCATION:Baseball A Pavilion\\, Bronte Creek Provincial Park\\,' +
+      ' 1219 Burloak Dr\\, Oakville\\, ON L6M 4J2',
+    'STATUS:CONFIRMED',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ];
+
+  res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="moote-picnic-2026.ics"');
+  res.send(lines.join('\r\n') + '\r\n');
+});
+
 // ── API: Admin RSVP edit / delete ─────────────────────────────────────────
 app.put('/api/admin/rsvp/:id', requireAdmin, (req, res) => {
   const id    = parseInt(req.params.id, 10);
