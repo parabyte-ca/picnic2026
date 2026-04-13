@@ -849,10 +849,6 @@ ul, ol { list-style: none; }
   animation: bf-flap-r 0.4s ease-in-out infinite;
 }
 
-/* Disable for users who prefer reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .butterfly-layer { display: none; }
-}
 
 /* ── Vote lock-in bar ────────────────────────────────────────── */
 .vote-actions {
