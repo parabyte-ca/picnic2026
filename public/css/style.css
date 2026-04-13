@@ -139,6 +139,7 @@ ul, ol { list-style: none; }
 
 .auth-emblem { display: flex; justify-content: center; margin-bottom: 20px; }
 .auth-emblem svg { filter: drop-shadow(0 2px 6px rgba(0,0,0,.12)); }
+.auth-leaf { font-size: 3.8rem; line-height: 1; display: block; }
 
 .auth-title {
   font-family: var(--font-display);
@@ -379,6 +380,19 @@ ul, ol { list-style: none; }
 .detail-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 .detail-card p  { font-size: .9rem; color: var(--text-muted); margin-bottom: 3px; }
 .detail-card p:first-of-type { color: var(--text); font-weight: 500; }
+
+/* ── Calendar download ───────────────────────────────────── */
+.cal-download {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.btn-cal { gap: 8px; }
+.cal-hint { font-size: .82rem; color: var(--text-muted); }
 
 /* ── Map & Directions ────────────────────────────────────── */
 .map-container {
